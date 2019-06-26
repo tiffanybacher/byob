@@ -1,4 +1,4 @@
-export default const housesData = [
+const housesData = [
   {
     house: 'Gryffindor',
     founder: 'Godric Gryffindor',
@@ -24,3 +24,5 @@ export default const housesData = [
     colors: 'green and silver'
   }
 ];
+
+module.exports = housesData;
