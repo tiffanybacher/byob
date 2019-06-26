@@ -2,20 +2,35 @@ const housesData = require('../../../datasets/housesData.js');
 
 const createHouse = (knex, house) => {
   return knex('houses').insert({
+    id: house.id,
     house: house.house,
     founder: house.founder,
     animal: house.animal,
     colors: house.colors,
-  }, 'id');
+  })
+  .then(() => {
+    let studentPromises = house.students.map(student => {
+        return createStudent(knex, student, house.id);
+      });
+
+    return Promise.all(studentPromises);
+  });
 }
 
-exports.seed = function(knex, Promise) {
-  return knex('houses').del()
-    .then(() => {
-      let housePromises = [];
+const createStudent = (knex, student, house_id) => {
+  return knex('students').insert({
+    id: student.id,
+    name: student.name,
+    house_id
+  });
+}
 
-      housesData.forEach(house => {
-        housePromises.push(createHouse(knex, house));
+exports.seed = function(knex) {
+  return knex('students').del()
+    .then(() => knex('houses').del())
+    .then(() => {
+      let housePromises = housesData.map(house => {
+        return createHouse(knex, house);
       });
 
       return Promise.all(housePromises);
