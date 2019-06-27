@@ -1,6 +1,6 @@
 const housesData = [
   {
-    id: 11,
+    id: 1,
     house: 'Gryffindor',
     founder: 'Godric Gryffindor',
     animal: 'lion',
@@ -29,7 +29,7 @@ const housesData = [
     ]
   },
   {
-    id: 12,
+    id: 2,
     house: 'Ravenclaw',
     founder: 'Rowena Ravenclaw',
     animal: 'eagle',
@@ -49,7 +49,7 @@ const housesData = [
     ]
   },
   {
-    id: 13,
+    id: 3,
     house: 'Hufflepuff',
     founder: 'Helga Hufflepuff',
     animal: 'badger',
@@ -64,7 +64,7 @@ const housesData = [
     ]
   },
   {
-    id: 14,
+    id: 4,
     house: 'Slytherin',
     founder: 'Salazar Slytherin',
     animal: 'snake',

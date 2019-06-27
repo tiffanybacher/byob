@@ -38,15 +38,36 @@ app.get('/api/v1/staff', (request, response) => {
 });
 
 app.get('/api/v1/staff/:id', (request, response) => {
-  database('staff').where('id', request.params.id).select()
+  const id = request.params.id;
+
+  database('staff').where('id', id).select()
     .then(staffMember => {
       if (staffMember.length) {
         response.status(200).json(staffMember);
       } else {
         response.status(404).json({
-          error: `Could not find staff member with id ${request.params.id}.`
+          error: `Could not find staff member with id ${id}.`
         });
       }
+    })
+    .catch(error => response.status(500).json({ error }));
+});
+
+app.delete('/api/v1/staff/:id', (request, response) => {
+  const id = request.params.id;
+
+  database('classes').where('instructor_id', id).update({
+    instructor_id: null
+  }, ['instructor_id'])
+  .then(() => {
+    database('staff').where('id', id).del()
+      .then(staffMember => {
+        if (!staffMember) {
+          response.status(404).json({ error: `Could not find student with id ${id}.` });
+        } else {
+          response.status(202).json({ sucess: `Staff member ${id} was successfully deleted.` });
+        }
+      });
     })
     .catch(error => response.status(500).json({ error }));
 });
@@ -78,13 +99,15 @@ app.get('/api/v1/students', (request, response) => {
 });
 
 app.get('/api/v1/students/:id', (request, response) => {
-  database('students').where('id', request.params.id).select()
+  const id = request.params.id;
+
+  database('students').where('id', id).select()
     .then(student => {
       if (student.length) {
         response.status(200).json(student);
       } else {
         response.status(404).json({ 
-          error: `Could not find student with id ${request.params.id}.`
+          error: `Could not find student with id ${id}.`
         });
       }
     })
@@ -92,32 +115,77 @@ app.get('/api/v1/students/:id', (request, response) => {
 });
 
 app.delete('/api/v1/students/:id', (request, response) => {
-  database('students').where('id', request.params.id).del()
+  const id = request.params.id;
+
+  database('students').where('id', id).del()
     .then(student => {
       if (!student) {
-        response.status(404).json({ error: `Could not find student with id ${request.params.id}.` });
+        response.status(404).json({ error: `Could not find student with id ${id}.` });
       } else {
-        response.status(202).json({ success: `Student ${request.params.id} was successfully deleted` });
+        response.status(202).json({ success: `Student ${id} was successfully deleted` });
       }
     })
     .catch(error => response.status(500).json({ error }));
 });
 
-app.delete('/api/v1/staff/:id', (request, response) => {
+app.post('/api/v1/classes', (request, response) => {
+  const classItem = request.body;
+
+  for (let param of ['class', 'instructor_id']) {
+    if (!classItem[param]) {
+      return response
+        .status(422)
+        .send({ error: `Expected { class: <string>, instructor_id: <integer> }. You are missing a '${param}' property.` })
+    }
+  }
+
+  database('classes').insert(classItem, 'id')
+    .then(paper => {
+      response.status(201).json({ id: paper[0] });
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
+app.get('/api/v1/classes', (request, response) => {
+  database('classes').select()
+    .then(classes => {
+      response.status(200).json(classes);
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
+app.get('/api/v1/classes/:id', (request, response) => {
   const id = request.params.id;
 
-  database('classes').where('instructor_id', id).update({
-    instructor_id: null
-  }, ['instructor_id'])
-  .then(() => {
-    database('staff').where('id', id).del()
-      .then(staffMember => {
-        if (!staffMember) {
-          response.status(404).json({ error: `Could not find student with id ${id}.` });
-        } else {
-          response.status(202).json({ sucess: `Staff member ${id} was successfully deleted.` });
-        }
-      });
+  database('classes').where('id', id).select()
+    .then(classItem => {
+      if (classItem) {
+        response.status(200).json(classItem);
+      } else {
+        response.status(404).json({ 
+          error: `Could not find class with id ${id}.` 
+        });
+      }
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
+app.delete('/api/v1/classes/:id', (request, response) => {
+  const id = request.params.id;
+
+  database('classes').where('id', id).del()
+    .then(classItem => {
+      if (!classItem) {
+        response.status(404).json({ error: `Could not find class with id ${id}.` });
+      } else {
+        response.status(202).json({ success: `Class ${id} was successfully deleted` });
+      }
     })
     .catch(error => response.status(500).json({ error }));
 });

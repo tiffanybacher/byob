@@ -19,7 +19,6 @@ const createHouse = (knex, house) => {
 
 const createStudent = (knex, student, house_id) => {
   return knex('students').insert({
-    id: student.id,
     name: student.name,
     house_id
   });
