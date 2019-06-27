@@ -140,3 +140,5 @@ const classesData = [
     student_ids: []
   }
 ]
+
+module.exports = classesData;
