@@ -18,7 +18,7 @@ app.post('/api/v1/staff', (request, response) => {
     if (!staffMember[param]) {
       return response
         .status(422)
-        .send({ error: `Expected { name: <string>, job_title: <string> }.` });
+        .send({ error: `Expected { name: <string>, job_title: <string> }. '${param}' is missing.` });
     }
   }
 
@@ -56,8 +56,9 @@ app.post('/api/v1/students', (request, response) => {
 
   for (let param of ['name', 'house_id']) {
     if (!student[param]) {
-      return response.status(422)
-        .send({ error: `Expected { name: <string>, house_id: <integer> }. "${param}" is missing.` });
+      return response
+        .status(422)
+        .send({ error: `Expected { name: <string>, house_id: <integer> }. '${param}' is missing.` });
     }
   }
 
@@ -98,6 +99,25 @@ app.delete('/api/v1/students/:id', (request, response) => {
       } else {
         response.status(202).json({ success: `Student ${request.params.id} was successfully deleted` });
       }
+    })
+    .catch(error => response.status(500).json({ error }));
+});
+
+app.delete('/api/v1/staff/:id', (request, response) => {
+  const id = request.params.id;
+
+  database('classes').where('instructor_id', id).update({
+    instructor_id: null
+  }, ['instructor_id'])
+  .then(() => {
+    database('staff').where('id', id).del()
+      .then(staffMember => {
+        if (!staffMember) {
+          response.status(404).json({ error: `Could not find student with id ${id}.` });
+        } else {
+          response.status(202).json({ sucess: `Staff member ${id} was successfully deleted.` });
+        }
+      });
     })
     .catch(error => response.status(500).json({ error }));
 });
