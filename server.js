@@ -82,9 +82,22 @@ app.get('/api/v1/students/:id', (request, response) => {
       if (student.length) {
         response.status(200).json(student);
       } else {
-        response.status(404).json({ error });
+        response.status(404).json({ 
+          error: `Could not find student with id ${request.params.id}.`
+        });
       }
     })
-    .catch(error => `Could not find student with id ${request.params.id}.` );
+    .catch(error => response.status(500).json({ error }));
 });
 
+app.delete('/api/v1/students/:id', (request, response) => {
+  database('students').where('id', request.params.id).del()
+    .then(student => {
+      if (!student) {
+        response.status(404).json({ error: `Could not find student with id ${request.params.id}.` });
+      } else {
+        response.status(202).json({ success: `Student ${request.params.id} was successfully deleted` });
+      }
+    })
+    .catch(error => response.status(500).json({ error }));
+});
