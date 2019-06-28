@@ -1,0 +1,26 @@
+{
+  "name": "byob",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "knex": "^0.17.6",
+    "pg": "^7.11.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiffanybacher/byob.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tiffanybacher/byob/issues"
+  },
+  "homepage": "https://github.com/tiffanybacher/byob#readme"
+}
