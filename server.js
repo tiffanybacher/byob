@@ -3,13 +3,18 @@ const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 const express = require('express');
 const app = express();
+const port = process.env.PORT || 3001;
 
 app.use(express.json());
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3001);
 
 app.listen(port, () => {
   console.log(`Hogwarts is running on ${port}.`);
+});
+
+app.get('/', (request, response) => {
+  response.status(200).send('Hello!');
 });
 
 app.post('/api/v1/staff', (request, response) => {
