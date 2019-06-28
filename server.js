@@ -6,8 +6,10 @@ const app = express();
 
 app.use(express.json());
 
-app.set(process.env.PORT || 3001, () => {
-  console.log(`Hogwarts is running on port ${port}`);
+app.set('port', process.env.PORT || 3000);
+
+app.listen(port, () => {
+  console.log(`Hogwarts is running on ${port}.`);
 });
 
 app.post('/api/v1/staff', (request, response) => {
