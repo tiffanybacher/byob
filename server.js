@@ -14,7 +14,7 @@ app.listen(port, () => {
 });
 
 app.get('/', (request, response) => {
-  response.status(200).send('Hello!');
+  response.status(200).send('Hello! Welcome to Hogwarts!');
 });
 
 app.post('/api/v1/staff', (request, response) => {
